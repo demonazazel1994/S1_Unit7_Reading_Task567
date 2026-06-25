@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 7 Reading Feedback Page</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --ink: #1f2937;
+      --muted: #6b7280;
+      --line: #d8dee9;
+      --blue: #1d4ed8;
+      --blue-soft: #e8f0ff;
+      --green: #166534;
+      --green-soft: #e8f7ed;
+      --red: #b91c1c;
+      --red-soft: #fdecec;
+      --amber: #92400e;
+      --amber-soft: #fff7e6;
+      --purple: #6d28d9;
+      --purple-soft: #f0e9ff;
+      --shadow: 0 6px 18px rgba(20, 30, 55, 0.08);
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.55;
+    }
+    header {
+      background: linear-gradient(135deg, #173b8f, #2563eb);
+      color: white;
+      padding: 28px 18px 24px;
+    }
+    .wrap { max-width: 1040px; margin: 0 auto; }
+    h1 { margin: 0 0 8px; font-size: clamp(1.6rem, 4vw, 2.35rem); line-height: 1.15; }
+    h2 { margin-top: 0; font-size: 1.35rem; }
+    h3 { margin-bottom: 8px; font-size: 1.08rem; }
+    .subtitle { margin: 0; opacity: 0.95; font-size: 1rem; }
+    main { padding: 18px; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+      margin: 16px 0;
+    }
+    .notice {
+      background: var(--blue-soft);
+      border: 1px solid #bfd4ff;
+      border-radius: 14px;
+      padding: 14px;
+      margin: 12px 0;
+    }
+    .small { color: var(--muted); font-size: 0.92rem; }
+    .task-label {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--purple-soft);
+      color: var(--purple);
+      font-weight: 700;
+      font-size: 0.86rem;
+      margin-bottom: 8px;
+    }
+    .skill-tag {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #3730a3;
+      font-size: 0.78rem;
+      font-weight: 700;
+      margin: 4px 0;
+    }
+    details {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+      margin: 12px 0;
+      overflow: hidden;
+    }
+    summary {
+      padding: 14px 16px;
+      cursor: pointer;
+      font-weight: 700;
+      background: #f8fafc;
+    }
+    details .inside { padding: 12px 16px 16px; }
+    .reading p { margin: 10px 0; }
+    .paragraph-label { font-weight: 800; color: #111827; }
+    .heading-bank {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 8px;
+      margin: 10px 0 6px;
+    }
+    .heading-item {
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 0.92rem;
+    }
+    .question {
+      border-top: 1px solid var(--line);
+      padding: 14px 0;
+    }
+    .question:first-of-type { border-top: 0; }
+    .q-title { font-weight: 700; margin-bottom: 8px; }
+    select, input[type="text"] {
+      width: 100%;
+      max-width: 620px;
+      padding: 11px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      background: white;
+      font-size: 1rem;
+      color: var(--ink);
+    }
+    .choices label {
+      display: block;
+      padding: 9px 10px;
+      margin: 7px 0;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      background: #fbfdff;
+    }
+    .choices input { margin-right: 7px; }
+    .sticky-actions {
+      position: sticky;
+      bottom: 0;
+      background: rgba(245,247,251,0.96);
+      backdrop-filter: blur(8px);
+      border-top: 1px solid var(--line);
+      padding: 12px 0;
+      margin-top: 16px;
+      z-index: 5;
+    }
+    .buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .primary { background: var(--blue); color: white; }
+    .secondary { background: #e5e7eb; color: #111827; }
+    .success { background: var(--green); color: white; }
+    #results { display: none; }
+    .score-box {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 10px;
+      margin: 12px 0;
+    }
+    .metric {
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      padding: 12px;
+      background: #f8fafc;
+    }
+    .metric strong { display: block; font-size: 1.4rem; }
+    .feedback-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      margin: 10px 0;
+      background: white;
+    }
+    .correct { border-color: #86efac; background: var(--green-soft); }
+    .wrong { border-color: #fecaca; background: var(--red-soft); }
+    .unanswered { border-color: #fde68a; background: var(--amber-soft); }
+    .status {
+      font-weight: 900;
+      display: inline-block;
+      margin-right: 8px;
+    }
+    .status.good { color: var(--green); }
+    .status.bad { color: var(--red); }
+    .status.warn { color: var(--amber); }
+    .evidence {
+      border-left: 4px solid #60a5fa;
+      padding: 8px 10px;
+      background: #eff6ff;
+      border-radius: 8px;
+      margin: 8px 0;
+    }
+    .reflection textarea {
+      width: 100%;
+      min-height: 72px;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #cbd5e1;
+      resize: vertical;
+      font-size: 1rem;
+    }
+    .top-link { color: white; text-decoration: underline; }
+    @media (max-width: 640px) {
+      main { padding: 12px; }
+      .card { padding: 14px; }
+      .buttons button { flex: 1 1 100%; }
+    }
+    @media print {
+      .sticky-actions, header, .no-print { display: none; }
+      body { background: white; }
+      .card, .feedback-card, details { box-shadow: none; break-inside: avoid; }
+      #results { display: block !important; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>Unit 7 Reading Feedback Page</h1>
+      <p class="subtitle">Generative AI and Academic Writing · Tasks 5, 6 and 7</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="card">
+      <h2>How to use this page</h2>
+      <div class="notice">
+        <strong>Complete the reading tasks in your booklet first.</strong> Then enter your answers here and click <strong>Check my answers</strong>. This page will show your score, correct answers, text evidence, explanations, distractor feedback, and the reading skill assessed by each item.
+      </div>
+      <p class="small">This page is for post-reading self-review. It is not a replacement for the first reading attempt.</p>
+    </section>
+
+    <details class="card reading">
+      <summary>Open reading text: ChatGPT’s Impact on Academic Writing</summary>
+      <div class="inside">
+        <p><span class="paragraph-label">I.</span> Generative artificial intelligence (AI), including ChatGPT, is expected to revolutionize various aspects of our world, including education. Students and teachers are preparing for the impact of ChatGPT on education, particularly its influence on an important element of schoolwork: the academic essay.</p>
+        <p><span class="paragraph-label">II.</span> ChatGPT, like other generative AI software, looks through large datasets to create new content. Its remarkable ability to generate essays from short prompts has started a discussion surrounding the honesty and quality of its output. Although its efficiency and ease of use are clear, students need to ask one question: do AI-generated essays follow the strict standards of education, and what might be the drawbacks of using Gen AI to write essays? As students move through this technological area, they must weigh the attraction of convenience against the need to maintain academic honesty, all while learning and applying academic skills.</p>
+        <p><span class="paragraph-label">III.</span> Generative AI models are a remarkable jump forward from conventional AI methods. While earlier AI versions mostly engaged in data analysis, the arrival of creative AI marks a major change, allowing machines to create new content by combining complex patterns found in large collections of existing data. Yet, among the excitement surrounding its potential, it is crucial to acknowledge ChatGPT’s early stage of development. Its improvements are notable. However, we must understand that the content it generates may not always meet academic writing standards.</p>
+        <p><span class="paragraph-label">IV.</span> A fundamental problem of creative AI lies in its dependence on numbers rather than real understanding, posing serious risks for academic honesty. Despite its skill at finding patterns within large sets of data, ChatGPT lacks real cognitive understanding. This lack limits its ability to check and confirm content accuracy. Therefore, there exists a clear risk of wrong or misleading output. These phenomena are commonly termed ‘AI hallucinations’ which is when the AI creates information or references fake sources. The spread of inaccurate information threatens to weaken trust in academic discussion. As many people struggle with the use of AI in academic writing, they face the need to protect against the dangers of AI-made content. They must use its great potential responsibly.</p>
+        <p><span class="paragraph-label">V.</span> Moreover, the inability of ChatGPT to engage in research adds to reliability concerns. It cannot check sources. While it can locate and reference sources, the truth of these sources remains unsure. In some instances, the sources found by ChatGPT may be full of mistakes or complete lies. This harms the trust and academic quality of the resulting essay. Beyond content quality, the use of public AI models like ChatGPT raises privacy worries. Users face the upsetting reality that entering sensitive data into such platforms potentially compromises their privacy rights. The spread of personal information within the area of AI not only gives away users’ control over their data but also raises serious ethical and legal concerns regarding data security and privacy. As those involved struggle with these challenges, they are forced to navigate a complex situation where technological growth meets ethical needs.</p>
+        <p><span class="paragraph-label">VI.</span> Despite the attraction of AI-generated essays, students should consider the benefits of writing their essays themselves. Writing promotes original thinking, critical analysis, and involvement with the subject – skills essential for academic and professional success. By writing their essays, students develop a deeper understanding of the material and improve their ability to communicate effectively. Looking ahead, generative AI models like ChatGPT are likely to become important tools in education. However, students must use them responsibly and recognize their limitations. While AI can support academic pursuits, it cannot replace the value of independent thinking and research. Ultimately, the future of AI in the classroom depends on its ability to add to – not replace – traditional learning methods.</p>
+      </div>
+    </details>
+
+    <form id="quizForm">
+      <section class="card" id="task5">
+        <span class="task-label">Task 5 · Match the Headings</span>
+        <h2>Part 1: Match the paragraphs with headings</h2>
+        <p class="small">Choose the best heading for each paragraph. There are three extra headings.</p>
+        <div class="heading-bank">
+          <div class="heading-item"><strong>A.</strong> Credibility Worries: Quality Risks and Privacy Concerns</div>
+          <div class="heading-item"><strong>B.</strong> How to Prevent AI Hallucinations in Essays</div>
+          <div class="heading-item"><strong>C.</strong> Ethics and Standards of AI-Generated Essays</div>
+          <div class="heading-item"><strong>D.</strong> Creative AI Relies on Cognitive Ability</div>
+          <div class="heading-item"><strong>E.</strong> Evolution and Challenges of Generative AI</div>
+          <div class="heading-item"><strong>F.</strong> How to Recognize AI’s Limitations</div>
+          <div class="heading-item"><strong>G.</strong> Risk of Fake Information in Academic Work</div>
+          <div class="heading-item"><strong>H.</strong> The Future Role of AI in Classroom</div>
+        </div>
+        <div id="task5Questions"></div>
+      </section>
+
+      <section class="card" id="task6">
+        <span class="task-label">Task 6 · Reading for Detail</span>
+        <h2>Part 2: Choose the best answer</h2>
+        <div id="task6Questions"></div>
+      </section>
+
+      <section class="card" id="task7a">
+        <span class="task-label">Task 7A · Reference Words Practice</span>
+        <h2>Part 3A: Identify reference words in the practice paragraph</h2>
+        <p class="small">Choose what each reference word refers to.</p>
+        <details>
+          <summary>Open Task 7A practice paragraph</summary>
+          <div class="inside">
+            Artificial intelligence (AI) is transforming education in remarkable ways. <strong>This</strong> technology allows teachers to personalize learning experiences for each student, catering to <strong>their</strong> unique needs. For instance, AI-driven platforms can analyze a student’s performance and provide tailored resources that enhance <strong>their</strong> understanding of complex subjects. Many educators find <strong>these</strong> tools invaluable, as <strong>they</strong> help save time and improve student engagement, with <strong>both</strong> seen as useful to students. However, some educators are concerned about the potential drawbacks of relying too heavily on AI. <strong>Its</strong> ability to generate content raises questions about academic integrity and the authenticity of student work. As schools increasingly integrate AI into <strong>their</strong> curricula, it is essential for educators to strike a balance between utilizing <strong>these</strong> innovative tools and maintaining the integrity of the learning process.
+          </div>
+        </details>
+        <div id="task7aQuestions"></div>
+      </section>
+
+      <section class="card" id="task7c">
+        <span class="task-label">Task 7C · Reference Words in the Reading</span>
+        <h2>Part 3B: Identify reference words in the main reading</h2>
+        <p class="small">Use the main reading text above. Choose what each underlined reference word refers to.</p>
+        <div id="task7cQuestions"></div>
+      </section>
+
+      <div class="sticky-actions no-print">
+        <div class="wrap buttons">
+          <button class="primary" type="button" onclick="checkAnswers()">Check my answers</button>
+          <button class="secondary" type="button" onclick="resetPage()">Reset</button>
+          <button class="success" type="button" onclick="printResults()">Print / Save feedback</button>
+        </div>
+      </div>
+    </form>
+
+    <section id="results" class="card">
+      <h2>Your feedback</h2>
+      <div id="scoreSummary" class="score-box"></div>
+      <div class="notice">
+        <strong>How to use this feedback:</strong> Do not only look at the score. Open the feedback for wrong items and check the skill tag. If several wrong answers have the same skill tag, that is probably your reading focus for next time.
+      </div>
+      <div id="feedbackOutput"></div>
+    </section>
+
+    <section class="card reflection">
+      <h2>Short reflection</h2>
+      <p>After checking your feedback, complete these sentences.</p>
+      <label><strong>1. The reading skill I need to improve most is:</strong></label>
+      <textarea placeholder="e.g., matching headings / reading for detail / reference words"></textarea>
+      <label><strong>2. One mistake I made today was:</strong></label>
+      <textarea placeholder="e.g., I matched a heading because of one keyword, not the whole paragraph."></textarea>
+      <label><strong>3. Next time, I will:</strong></label>
+      <textarea placeholder="e.g., read the topic sentence and check whether the heading covers the whole paragraph."></textarea>
+    </section>
+  </main>
+
+  <script>
+    const headings = {
+      A: 'Credibility Worries: Quality Risks and Privacy Concerns',
+      B: 'How to Prevent AI Hallucinations in Essays',
+      C: 'Ethics and Standards of AI-Generated Essays',
+      D: 'Creative AI Relies on Cognitive Ability',
+      E: 'Evolution and Challenges of Generative AI',
+      F: 'How to Recognize AI’s Limitations',
+      G: 'Risk of Fake Information in Academic Work',
+      H: 'The Future Role of AI in Classroom'
+    };
+
+    const refOptions = [
+      'Artificial intelligence',
+      'Students',
+      'AI-driven platforms',
+      'Save time and improve student engagement',
+      'Schools',
+      'Creative AI / ChatGPT',
+      'Many people',
+      'ChatGPT',
+      'The previous sentence',
+      'Users'
+    ];
+
+    const questions = [
+      {
+        id:'t5q1', section:'Task 5', type:'select', group:'task5Questions',
+        prompt:'1. Paragraph II', options:headings, correct:'C',
+        skill:'Matching headings / sectional main idea',
+        evidence:'Paragraph II discusses the honesty and quality of AI output, whether AI-generated essays follow strict educational standards, and the need to maintain academic honesty.',
+        explanation:'The whole paragraph is about whether AI-generated essays meet academic standards and integrity requirements. This is broader than one specific problem such as fake sources.',
+        tip:'For heading matching, do not choose a heading because of one word only. Check whether the heading summarises the whole paragraph.'
+      },
+      {
+        id:'t5q2', section:'Task 5', type:'select', group:'task5Questions',
+        prompt:'2. Paragraph III', options:headings, correct:'E',
+        skill:'Matching headings / sectional main idea',
+        evidence:'Paragraph III contrasts earlier AI with generative AI, explains that creative AI can create new content, and then notes that ChatGPT is still developing and may not meet academic standards.',
+        explanation:'The paragraph is mainly about the development of generative AI and the challenges that come with it. It is not saying that creative AI has real cognitive ability.',
+        tip:'Look for the movement of the paragraph: old AI → new creative AI → current limitations.'
+      },
+      {
+        id:'t5q3', section:'Task 5', type:'select', group:'task5Questions',
+        prompt:'3. Paragraph IV', options:headings, correct:'G',
+        skill:'Matching headings / sectional main idea',
+        evidence:'Paragraph IV says ChatGPT lacks real cognitive understanding, may produce wrong or misleading output, and can create information or fake sources. These are called AI hallucinations.',
+        explanation:'The main focus is the risk of inaccurate or fake information in academic work. The paragraph is not mainly about how to prevent hallucinations.',
+        tip:'If a heading mentions prevention, check whether the paragraph actually gives prevention methods. This paragraph mainly explains the risk.'
+      },
+      {
+        id:'t5q4', section:'Task 5', type:'select', group:'task5Questions',
+        prompt:'4. Paragraph V', options:headings, correct:'A',
+        skill:'Matching headings / sectional main idea',
+        evidence:'Paragraph V discusses ChatGPT’s inability to check sources, possible mistakes or false sources, damage to essay quality, and privacy worries when users enter sensitive data.',
+        explanation:'The paragraph combines two concerns: credibility/quality risks and privacy concerns. Heading A covers both parts.',
+        tip:'When a paragraph has two main parts, choose the heading that covers both, not just the first half.'
+      },
+      {
+        id:'t5q5', section:'Task 5', type:'select', group:'task5Questions',
+        prompt:'5. Paragraph VI', options:headings, correct:'H',
+        skill:'Matching headings / sectional main idea',
+        evidence:'Paragraph VI looks ahead and says generative AI may become an important tool in education, but it should support, not replace, independent thinking and traditional learning methods.',
+        explanation:'The paragraph focuses on the future role of AI in education. It is not just a list of limitations; it explains how AI should be used in learning.',
+        tip:'Final paragraphs often move from problems to a broader future implication or final message.'
+      },
+      {
+        id:'t6q1', section:'Task 6', type:'mcq', group:'task6Questions',
+        prompt:'1. What is the primary concern regarding AI-generated essays as highlighted in the text?',
+        options:{a:'The potential for AI to replace teachers.', b:'AI not following academic standards and integrity.', c:'The limited availability of AI tools for students.'}, correct:'b',
+        skill:'Reading for detail / identifying a stated concern',
+        evidence:'Paragraph II asks whether AI-generated essays follow the strict standards of education and highlights the need to maintain academic honesty.',
+        explanation:'The text focuses on academic standards and integrity. It does not say the main concern is teacher replacement or tool availability.',
+        tip:'For detail questions, locate the key phrase from the question, then read the sentence around it carefully.'
+      },
+      {
+        id:'t6q2', section:'Task 6', type:'mcq', group:'task6Questions',
+        prompt:'2. According to the text, what distinguishes generative AI models from earlier AI versions?',
+        options:{a:'Their ability to perform data analysis more efficiently.', b:'Their capacity to create new content by combining complex patterns from existing data.', c:'Their focus on improving academic writing.'}, correct:'b',
+        skill:'Reading for detail / comparing ideas',
+        evidence:'Paragraph III says earlier AI versions mostly engaged in data analysis, while creative AI can create new content by combining complex patterns from large collections of existing data.',
+        explanation:'Option b captures the contrast between earlier AI and generative AI. Option a describes earlier AI rather than generative AI.',
+        tip:'When a question asks what distinguishes two things, look for contrast words such as while, however, or different from.'
+      },
+      {
+        id:'t6q3', section:'Task 6', type:'mcq', group:'task6Questions',
+        prompt:'3. Which statement best reflects the text’s overall view on the limitations of ChatGPT?',
+        options:{a:'ChatGPT cannot accurately verify the truth of the sources it references.', b:'ChatGPT is not fully capable of conducting independent research.', c:'ChatGPT’s lack of cognitive understanding limits its ability to ensure content accuracy.'}, correct:'c',
+        skill:'Reading for detail / choosing the broadest accurate answer',
+        evidence:'Paragraph IV says ChatGPT lacks real cognitive understanding, and this limits its ability to check and confirm content accuracy.',
+        explanation:'Options a and b are true details from the text, but option c is the broader explanation behind these limitations.',
+        tip:'When all options seem possible, choose the answer that best matches the overall point, not just one supporting detail.'
+      },
+      {
+        id:'t6q4', section:'Task 6', type:'mcq', group:'task6Questions',
+        prompt:'4. Which ethical concern related to the use of AI models like ChatGPT is mentioned in the text?',
+        options:{a:'The risk of misusing users’ privacy rights by entering sensitive data.', b:'The potential for AI to create biased content.', c:'The possibility of AI replacing human creativity and critical thinking in writing.'}, correct:'a',
+        skill:'Reading for detail / identifying ethical concern',
+        evidence:'Paragraph V says that entering sensitive data into public AI models may compromise users’ privacy rights and raises ethical and legal concerns about data security and privacy.',
+        explanation:'The text directly mentions privacy and sensitive data. Bias is not mentioned in this passage.',
+        tip:'Scan for key terms such as ethical, privacy, sensitive data, or legal concerns.'
+      },
+      {
+        id:'t7a1', section:'Task 7A', type:'selectRef', group:'task7aQuestions',
+        prompt:'1. “This” in “This technology allows teachers...”', correct:'Artificial intelligence',
+        skill:'Reference words / demonstrative pronouns',
+        evidence:'The previous sentence introduces Artificial intelligence (AI). “This technology” points back to AI.',
+        explanation:'“This” usually points to an idea or noun just mentioned before it.',
+        tip:'Look backwards first when you see this, these, that, or those.'
+      },
+      {
+        id:'t7a2', section:'Task 7A', type:'selectRef', group:'task7aQuestions',
+        prompt:'2. “their” in “catering to their unique needs”', correct:'Students',
+        skill:'Reference words / possessive pronouns',
+        evidence:'The sentence says teachers personalize learning experiences for each student, so “their unique needs” means students’ needs.',
+        explanation:'The possessive pronoun “their” refers to the learners being supported.',
+        tip:'Ask: whose needs?'
+      },
+      {
+        id:'t7a3', section:'Task 7A', type:'selectRef', group:'task7aQuestions',
+        prompt:'3. “their” in “enhance their understanding”', correct:'Students',
+        skill:'Reference words / possessive pronouns',
+        evidence:'AI-driven platforms analyze a student’s performance and provide resources to enhance their understanding.',
+        explanation:'The understanding belongs to students, not teachers or platforms.',
+        tip:'Check the nearest logical noun, not only the nearest noun on the page.'
+      },
+      {
+        id:'t7a4', section:'Task 7A', type:'selectRef', group:'task7aQuestions',
+        prompt:'4. “these” in “these tools”', correct:'AI-driven platforms',
+        skill:'Reference words / demonstrative pronouns',
+        evidence:'The previous sentence mentions AI-driven platforms. “These tools” refers to those platforms.',
+        explanation:'“These tools” renames AI-driven platforms.',
+        tip:'A reference word can refer to a phrase, not only one word.'
+      },
+      {
+        id:'t7a5', section:'Task 7A', type:'selectRef', group:'task7aQuestions',
+        prompt:'5. “they” in “as they help save time...”', correct:'AI-driven platforms',
+        skill:'Reference words / pronouns',
+        evidence:'Many educators find these tools invaluable, as they help save time and improve student engagement.',
+        explanation:'“They” refers to “these tools”, meaning AI-driven platforms.',
+        tip:'Replace the pronoun with your answer and see if the sentence still makes sense.'
+      },
+      {
+        id:'t7a6', section:'Task 7A', type:'selectRef', group:'task7aQuestions',
+        prompt:'6. “both” in “with both seen as useful to students”', correct:'Save time and improve student engagement',
+        skill:'Reference words / other reference phrases',
+        evidence:'The sentence lists two benefits: save time and improve student engagement. “Both” refers to these two benefits.',
+        explanation:'“Both” refers to two items mentioned immediately before it.',
+        tip:'When you see both, identify the two things.'
+      },
+      {
+        id:'t7a7', section:'Task 7A', type:'selectRef', group:'task7aQuestions',
+        prompt:'7. “Its” in “Its ability to generate content...”', correct:'Artificial intelligence',
+        skill:'Reference words / possessive pronouns',
+        evidence:'The previous sentence discusses relying too heavily on AI. “Its ability” means AI’s ability.',
+        explanation:'“Its” refers to AI as a singular thing/concept.',
+        tip:'Ask: whose ability?'
+      },
+      {
+        id:'t7a8', section:'Task 7A', type:'selectRef', group:'task7aQuestions',
+        prompt:'8. “their” in “schools integrate AI into their curricula”', correct:'Schools',
+        skill:'Reference words / possessive pronouns',
+        evidence:'The subject of the clause is schools. “Their curricula” means the schools’ curricula.',
+        explanation:'The possessive pronoun refers to schools.',
+        tip:'Check the subject of the clause.'
+      },
+      {
+        id:'t7c1', section:'Task 7C', type:'selectRef', group:'task7cQuestions',
+        prompt:'1. Paragraph II: “they” in “they must weigh the attraction of convenience...”', correct:'Students',
+        skill:'Reference words in academic reading',
+        evidence:'The sentence says: “As students move through this technological area, they must weigh...”',
+        explanation:'The pronoun “they” clearly refers back to students.',
+        tip:'The answer is usually nearby, often before the pronoun.'
+      },
+      {
+        id:'t7c2', section:'Task 7C', type:'selectRef', group:'task7cQuestions',
+        prompt:'2. Paragraph III: “its” in “Its improvements are notable”', correct:'Creative AI / ChatGPT',
+        skill:'Reference words in academic reading',
+        evidence:'The previous sentence mentions ChatGPT’s early stage of development. “Its improvements” refers to ChatGPT / creative AI.',
+        explanation:'“Its” points back to the AI system being discussed.',
+        tip:'Use the sentence before the reference word to identify the referent.'
+      },
+      {
+        id:'t7c3', section:'Task 7C', type:'selectRef', group:'task7cQuestions',
+        prompt:'3. Paragraph IV: “They” in “They must use its great potential responsibly”', correct:'Many people',
+        skill:'Reference words in academic reading',
+        evidence:'The previous sentence says many people struggle with the use of AI in academic writing. “They” refers to many people.',
+        explanation:'The people who must use AI responsibly are the many people mentioned before.',
+        tip:'Check whether the pronoun is singular or plural.'
+      },
+      {
+        id:'t7c4', section:'Task 7C', type:'selectRef', group:'task7cQuestions',
+        prompt:'4. Paragraph V: “It” in “It cannot check sources”', correct:'ChatGPT',
+        skill:'Reference words in academic reading',
+        evidence:'The previous sentence mentions the inability of ChatGPT to engage in research. “It cannot check sources” means ChatGPT cannot check sources.',
+        explanation:'“It” refers to ChatGPT.',
+        tip:'For it, look for the nearest singular noun or concept that logically fits.'
+      },
+      {
+        id:'t7c5', section:'Task 7C', type:'selectRef', group:'task7cQuestions',
+        prompt:'5. Paragraph V: “This” in “This harms the trust and academic quality...”', correct:'The previous sentence',
+        skill:'Reference words / referring to a whole idea',
+        evidence:'The previous sentence says sources found by ChatGPT may be full of mistakes or complete lies. This situation harms trust and academic quality.',
+        explanation:'Here “This” refers to the whole previous idea, not just one noun.',
+        tip:'“This” can refer to a whole sentence or situation.'
+      },
+      {
+        id:'t7c6', section:'Task 7C', type:'selectRef', group:'task7cQuestions',
+        prompt:'6. Paragraph V: “their” in “compromises their privacy rights”', correct:'Users',
+        skill:'Reference words in academic reading',
+        evidence:'The sentence says users face the risk of entering sensitive data into AI platforms. “Their privacy rights” means users’ privacy rights.',
+        explanation:'The privacy rights belong to users.',
+        tip:'Ask: whose privacy rights?'
+      },
+      {
+        id:'t7c7', section:'Task 7C', type:'selectRef', group:'task7cQuestions',
+        prompt:'7. Paragraph V: “those” in “As those involved struggle...”', correct:'Users',
+        skill:'Reference words / demonstrative pronouns',
+        evidence:'The surrounding sentences discuss users and people involved in using AI tools. “Those involved” refers to users / people involved in AI use.',
+        explanation:'The reference points to the people involved in using or dealing with AI tools.',
+        tip:'For those, identify the group of people recently discussed.'
+      }
+    ];
+
+    function makeSelect(q) {
+      let optionsHtml = '<option value="">Choose...</option>';
+      Object.entries(q.options).forEach(([key, val]) => {
+        optionsHtml += `<option value="${key}">${key}. ${val}</option>`;
+      });
+      return `<select name="${q.id}" aria-label="${q.prompt}">${optionsHtml}</select>`;
+    }
+
+    function makeRefSelect(q) {
+      let optionsHtml = '<option value="">Choose...</option>';
+      refOptions.forEach(opt => {
+        optionsHtml += `<option value="${opt}">${opt}</option>`;
+      });
+      return `<select name="${q.id}" aria-label="${q.prompt}">${optionsHtml}</select>`;
+    }
+
+    function makeMcq(q) {
+      let html = '<div class="choices">';
+      Object.entries(q.options).forEach(([key, val]) => {
+        html += `<label><input type="radio" name="${q.id}" value="${key}"> <strong>${key}.</strong> ${val}</label>`;
+      });
+      html += '</div>';
+      return html;
+    }
+
+    function renderQuestions() {
+      questions.forEach(q => {
+        const div = document.createElement('div');
+        div.className = 'question';
+        const input = q.type === 'mcq' ? makeMcq(q) : (q.type === 'selectRef' ? makeRefSelect(q) : makeSelect(q));
+        div.innerHTML = `<div class="q-title">${q.prompt}</div><div class="skill-tag">Skill: ${q.skill}</div>${input}`;
+        document.getElementById(q.group).appendChild(div);
+      });
+    }
+
+    function getAnswer(q) {
+      if (q.type === 'mcq') {
+        const selected = document.querySelector(`input[name="${q.id}"]:checked`);
+        return selected ? selected.value : '';
+      }
+      const el = document.querySelector(`select[name="${q.id}"]`);
+      return el ? el.value : '';
+    }
+
+    function labelAnswer(q, value) {
+      if (!value) return 'No answer';
+      if (q.type === 'select') return `${value}. ${q.options[value] || ''}`;
+      if (q.type === 'mcq') return `${value}. ${q.options[value] || ''}`;
+      return value;
+    }
+
+    function sectionScores() {
+      const sections = {};
+      questions.forEach(q => {
+        if (!sections[q.section]) sections[q.section] = { total:0, correct:0 };
+        sections[q.section].total += 1;
+        if (getAnswer(q) === q.correct) sections[q.section].correct += 1;
+      });
+      return sections;
+    }
+
+    function skillSummary() {
+      const skills = {};
+      questions.forEach(q => {
+        const family = q.skill.split('/')[0].trim();
+        if (!skills[family]) skills[family] = { total:0, wrong:0 };
+        skills[family].total += 1;
+        const ans = getAnswer(q);
+        if (ans !== q.correct) skills[family].wrong += 1;
+      });
+      return skills;
+    }
+
+    function checkAnswers() {
+      let total = questions.length;
+      let correct = 0;
+      let unanswered = 0;
+      const feedbackParts = [];
+
+      questions.forEach((q, idx) => {
+        const ans = getAnswer(q);
+        const isUnanswered = ans === '';
+        const isCorrect = ans === q.correct;
+        if (isCorrect) correct += 1;
+        if (isUnanswered) unanswered += 1;
+        let cardClass = isUnanswered ? 'unanswered' : (isCorrect ? 'correct' : 'wrong');
+        let status = isUnanswered ? '<span class="status warn">Not answered</span>' : (isCorrect ? '<span class="status good">Correct</span>' : '<span class="status bad">Needs review</span>');
+        let selectedLine = `<p><strong>Your answer:</strong> ${labelAnswer(q, ans)}</p>`;
+        let correctLine = `<p><strong>Correct answer:</strong> ${labelAnswer(q, q.correct)}</p>`;
+        let selectedFeedback = '';
+        if (!isCorrect && !isUnanswered) {
+          selectedFeedback = `<p><strong>Why your answer may be wrong:</strong> Your choice may match one word or one small detail, but it does not best match the whole paragraph/sentence focus. Check the evidence and explanation below.</p>`;
+        }
+        feedbackParts.push(`
+          <div class="feedback-card ${cardClass}">
+            <h3>${q.section} · ${q.prompt}</h3>
+            <div>${status}<span class="skill-tag">${q.skill}</span></div>
+            ${selectedLine}
+            ${correctLine}
+            <div class="evidence"><strong>Text evidence:</strong> ${q.evidence}</div>
+            <p><strong>Explanation:</strong> ${q.explanation}</p>
+            ${selectedFeedback}
+            <p><strong>Reading strategy tip:</strong> ${q.tip}</p>
+          </div>
+        `);
+      });
+
+      const percent = Math.round((correct / total) * 100);
+      const sections = sectionScores();
+      const skills = skillSummary();
+      let scoreHtml = `
+        <div class="metric"><span>Total score</span><strong>${correct}/${total}</strong><span>${percent}%</span></div>
+        <div class="metric"><span>Unanswered</span><strong>${unanswered}</strong><span>items</span></div>
+      `;
+      Object.entries(sections).forEach(([name, s]) => {
+        scoreHtml += `<div class="metric"><span>${name}</span><strong>${s.correct}/${s.total}</strong><span>${Math.round(s.correct/s.total*100)}%</span></div>`;
+      });
+      let skillHtml = '<div class="card" style="box-shadow:none;background:#f8fafc;"><h3>Skill diagnosis</h3>';
+      Object.entries(skills).forEach(([name, s]) => {
+        const msg = s.wrong === 0 ? 'Good' : `${s.wrong} item(s) to review`;
+        skillHtml += `<p><strong>${name}:</strong> ${msg}</p>`;
+      });
+      skillHtml += '</div>';
+
+      document.getElementById('scoreSummary').innerHTML = scoreHtml;
+      document.getElementById('feedbackOutput').innerHTML = skillHtml + feedbackParts.join('');
+      document.getElementById('results').style.display = 'block';
+      document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function resetPage() {
+      if (!confirm('Clear all answers and feedback?')) return;
+      document.getElementById('quizForm').reset();
+      document.getElementById('results').style.display = 'none';
+      document.getElementById('feedbackOutput').innerHTML = '';
+      document.getElementById('scoreSummary').innerHTML = '';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function printResults() {
+      if (document.getElementById('results').style.display === 'none') {
+        checkAnswers();
+        setTimeout(() => window.print(), 200);
+      } else {
+        window.print();
+      }
+    }
+
+    renderQuestions();
+  </script>
+</body>
+</html>
